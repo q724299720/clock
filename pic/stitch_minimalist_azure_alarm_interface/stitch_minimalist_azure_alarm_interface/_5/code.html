@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>编辑提醒</title>
+<!-- Google Fonts & Material Symbols -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&amp;family=JetBrains+Mono:wght@600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                            "secondary-container": "#d5e0f8",
+                            "on-tertiary-fixed-variant": "#38485d",
+                            "on-tertiary-container": "#e9f0ff",
+                            "tertiary-container": "#5e6e85",
+                            "on-background": "#191b23",
+                            "surface-container": "#ededf9",
+                            "outline": "#737686",
+                            "surface-dim": "#d9d9e5",
+                            "secondary-fixed": "#d8e3fb",
+                            "primary-fixed": "#dbe1ff",
+                            "secondary": "#545f73",
+                            "on-surface": "#191b23",
+                            "on-tertiary-fixed": "#0b1c30",
+                            "surface-container-high": "#e7e7f3",
+                            "surface-bright": "#faf8ff",
+                            "inverse-on-surface": "#f0f0fb",
+                            "background": "#faf8ff",
+                            "inverse-primary": "#b4c5ff",
+                            "surface": "#faf8ff",
+                            "surface-tint": "#0053db",
+                            "tertiary-fixed-dim": "#b7c8e1",
+                            "outline-variant": "#c3c6d7",
+                            "tertiary-fixed": "#d3e4fe",
+                            "tertiary": "#46566c",
+                            "on-primary-fixed": "#00174b",
+                            "on-error-container": "#93000a",
+                            "on-primary-fixed-variant": "#003ea8",
+                            "surface-variant": "#e1e2ed",
+                            "surface-container-highest": "#e1e2ed",
+                            "on-primary-container": "#eeefff",
+                            "primary-container": "#2563eb",
+                            "inverse-surface": "#2e3039",
+                            "on-primary": "#ffffff",
+                            "secondary-fixed-dim": "#bcc7de",
+                            "on-error": "#ffffff",
+                            "primary-fixed-dim": "#b4c5ff",
+                            "on-secondary": "#ffffff",
+                            "on-surface-variant": "#434655",
+                            "on-secondary-fixed-variant": "#3c475a",
+                            "on-tertiary": "#ffffff",
+                            "primary": "#004ac6",
+                            "surface-container-low": "#f3f3fe",
+                            "on-secondary-fixed": "#111c2d",
+                            "on-secondary-container": "#586377",
+                            "error": "#ba1a1a",
+                            "error-container": "#ffdad6",
+                            "surface-container-lowest": "#ffffff"
+                    },
+                    "borderRadius": {
+                            "DEFAULT": "0.25rem",
+                            "lg": "0.5rem",
+                            "xl": "0.75rem",
+                            "full": "9999px"
+                    },
+                    "spacing": {
+                            "grid-gutter": "1rem",
+                            "container-padding": "1.25rem",
+                            "stack-gap": "1rem",
+                            "card-padding": "1.5rem"
+                    },
+                    "fontFamily": {
+                            "body-lg": ["Hanken Grotesk"],
+                            "body-md": ["Hanken Grotesk"],
+                            "headline-lg": ["Hanken Grotesk"],
+                            "headline-lg-mobile": ["Hanken Grotesk"],
+                            "label-caps": ["JetBrains Mono"],
+                            "headline-md": ["Hanken Grotesk"],
+                            "display-time": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                            "body-lg": ["18px", {"lineHeight": "26px", "fontWeight": "400"}],
+                            "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                            "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                            "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                            "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                            "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                            "display-time": ["64px", {"lineHeight": "72px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        /* Time picker fade effect */
+        .picker-mask {
+            -webkit-mask-image: linear-gradient(to bottom, transparent, black 30%, black 70%, transparent);
+            mask-image: linear-gradient(to bottom, transparent, black 30%, black 70%, transparent);
+        }
+
+        /* Hide scrollbar for clean aesthetic */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col antialiased">
+<!-- Task Header (Overrides App Shell for task focus) -->
+<header class="w-full top-0 sticky z-40 bg-background/90 backdrop-blur-md flex items-center h-16 px-container-padding max-w-screen-md mx-auto">
+<button aria-label="Go back" class="w-12 h-12 flex items-center justify-start text-on-surface hover:bg-surface-variant/50 rounded-full transition-colors">
+<span class="material-symbols-outlined text-[28px]" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-headline-md ml-2 flex-1">编辑提醒</h1>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 w-full max-w-screen-md mx-auto px-container-padding py-6 flex flex-col gap-8 pb-20">
+<!-- Section: Time Picker -->
+<section class="flex flex-col gap-3">
+<h2 class="font-headline-md text-headline-md text-on-surface">时间</h2>
+<div class="bg-surface-container-lowest rounded-[24px] border border-outline-variant p-4 relative overflow-hidden flex flex-col items-center justify-center min-h-[220px]">
+<!-- Active Row Highlight Background -->
+<div class="absolute inset-x-4 top-1/2 -translate-y-1/2 h-[56px] bg-secondary-container/40 rounded-xl border-y border-outline-variant/30 pointer-events-none z-0"></div>
+<!-- Picker Columns Container -->
+<div class="flex items-center justify-center w-full relative z-10 picker-mask h-[180px]">
+<!-- Hours Column -->
+<div class="flex-1 flex flex-col items-center overflow-y-scroll snap-y snap-mandatory no-scrollbar h-full pt-[60px] pb-[60px]">
+<div class="text-on-surface-variant/50 font-body-lg h-[56px] flex items-center justify-center snap-center w-full transition-all">05</div>
+<div class="text-on-surface-variant/70 font-body-lg h-[56px] flex items-center justify-center snap-center w-full transition-all text-xl">06</div>
+<div class="text-on-surface font-headline-lg-mobile h-[56px] flex items-center justify-center snap-center w-full transition-all text-3xl">07</div>
+<div class="text-on-surface-variant/70 font-body-lg h-[56px] flex items-center justify-center snap-center w-full transition-all text-xl">08</div>
+<div class="text-on-surface-variant/50 font-body-lg h-[56px] flex items-center justify-center snap-center w-full transition-all">09</div>
+</div>
+<!-- Colon Separator -->
+<div class="font-headline-lg-mobile text-on-surface px-2 pb-2">:</div>
+<!-- Minutes Column -->
+<div class="flex-1 flex flex-col items-center overflow-y-scroll snap-y snap-mandatory no-scrollbar h-full pt-[60px] pb-[60px]">
+<div class="text-on-surface-variant/50 font-body-lg h-[56px] flex items-center justify-center snap-center w-full transition-all">58</div>
+<div class="text-on-surface-variant/70 font-body-lg h-[56px] flex items-center justify-center snap-center w-full transition-all text-xl">59</div>
+<div class="text-on-surface font-headline-lg-mobile h-[56px] flex items-center justify-center snap-center w-full transition-all text-3xl">00</div>
+<div class="text-on-surface-variant/70 font-body-lg h-[56px] flex items-center justify-center snap-center w-full transition-all text-xl">01</div>
+<div class="text-on-surface-variant/50 font-body-lg h-[56px] flex items-center justify-center snap-center w-full transition-all">02</div>
+</div>
+</div>
+<!-- Column Labels Overlay -->
+<div class="absolute top-6 w-full flex justify-around px-4 pointer-events-none z-20">
+<span class="font-body-md text-on-surface-variant">小时</span>
+<span class="font-body-md text-on-surface-variant">分钟</span>
+</div>
+</div>
+</section>
+<!-- Section: Ring Date -->
+<section class="flex flex-col gap-3">
+<h2 class="font-headline-md text-headline-md text-on-surface">响铃日期</h2>
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-5 hover:bg-surface-container-low transition-colors cursor-pointer active:scale-[0.99]">
+<div class="font-headline-md text-headline-md text-on-surface mb-1">2026年06月06日 星期六</div>
+<div class="font-body-md text-on-surface-variant">到指定日期后只提醒一次</div>
+</div>
+</section>
+<!-- Section: Title Input -->
+<section class="flex flex-col gap-3">
+<h2 class="font-headline-md text-headline-md text-on-surface">标题</h2>
+<div class="relative group">
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-xl p-5 font-body-lg text-on-surface placeholder-on-surface-variant/60 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all h-16" placeholder="例如：起床、开会、接孩子" type="text"/>
+</div>
+</section>
+<!-- Section: Repeat Options -->
+<section class="flex flex-col gap-3">
+<h2 class="font-headline-md text-headline-md text-on-surface">是否重复</h2>
+<div class="flex flex-wrap gap-3">
+<!-- Active Chip -->
+<button class="h-12 px-6 rounded-lg font-body-md bg-secondary-container text-on-secondary-container transition-transform active:scale-95 flex items-center justify-center">
+                    只响一次
+                </button>
+<!-- Inactive Chips -->
+<button class="h-12 px-6 rounded-lg font-body-md bg-surface-container-lowest border border-outline-variant text-on-surface-variant hover:bg-surface-variant/30 transition-transform active:scale-95 flex items-center justify-center">
+                    每天
+                </button>
+<button class="h-12 px-6 rounded-lg font-body-md bg-surface-container-lowest border border-outline-variant text-on-surface-variant hover:bg-surface-variant/30 transition-transform active:scale-95 flex items-center justify-center">
+                    每周
+                </button>
+<button class="h-12 px-6 rounded-lg font-body-md bg-surface-container-lowest border border-outline-variant text-on-surface-variant hover:bg-surface-variant/30 transition-transform active:scale-95 flex items-center justify-center">
+                    每月
+                </button>
+<button class="h-12 px-6 rounded-lg font-body-md bg-surface-container-lowest border border-outline-variant text-on-surface-variant hover:bg-surface-variant/30 transition-transform active:scale-95 flex items-center justify-center">
+                    每年
+                </button>
+</div>
+</section>
+</main>
+</body></html>

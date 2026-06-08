@@ -1,0 +1,16 @@
+[Unit]
+Description=SmartClock Server
+After=network.target mysql.service
+
+[Service]
+Type=simple
+User=__APP_USER__
+WorkingDirectory=__SERVER_HOME__
+ExecStart=/usr/bin/java -Duser.timezone=UTC -jar __SERVER_HOME__/smartclock-server.jar --spring.profiles.active=prod --spring.config.additional-location=__SERVER_HOME__/application-prod.yml
+Restart=always
+RestartSec=5
+StandardOutput=append:__LOG_HOME__/server.log
+StandardError=append:__LOG_HOME__/server-error.log
+
+[Install]
+WantedBy=multi-user.target

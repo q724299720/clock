@@ -1,0 +1,21 @@
+server:
+  port: 8080
+  forward-headers-strategy: native
+
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/clock?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC&connectionTimeZone=UTC&sessionVariables=time_zone='%2B00:00'
+    username: clock
+    password: replace-me
+  jackson:
+    time-zone: UTC
+  jooq:
+    sql-dialect: mysql
+
+smartclock:
+  jwt:
+    issuer: smartclock-server
+    access-token-minutes: 15
+    refresh-token-days: 30
+    secret: replace-with-at-least-32-bytes-secret
+    refresh-pepper: replace-with-random-pepper

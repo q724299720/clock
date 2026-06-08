@@ -1,0 +1,8 @@
+# Copy to local.defaults.properties for local development.
+# CI should inject the same keys through environment variables.
+API_BASE_URL=https://your-domain.example.com
+
+# Signing for local release builds.
+SIGNING_STORE_PASSWORD=
+SIGNING_KEY_ALIAS=smartclock
+SIGNING_KEY_PASSWORD=

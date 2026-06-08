@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">SmartClock</string>
+    <string name="channel_alarm_name">闹钟提醒</string>
+    <string name="channel_countdown_name">倒计时</string>
+    <string name="widget_next_reminder_name">下一个提醒</string>
+    <string name="widget_no_reminder_time">--:--</string>
+    <string name="widget_no_reminder_title">暂无启用提醒</string>
+    <string name="widget_today_reminders_name">今日提醒</string>
+    <string name="widget_today_reminders_empty">今天还没有提醒</string>
+</resources>

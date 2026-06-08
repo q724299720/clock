@@ -1,0 +1,11 @@
+{
+  "name": "smartclock/server-php",
+  "description": "SmartClock PHP backend",
+  "type": "project",
+  "require": {
+    "php": "^8.2",
+    "ext-json": "*",
+    "ext-openssl": "*",
+    "ext-pdo": "*"
+  }
+}

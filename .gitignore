@@ -1,0 +1,55 @@
+# 构建产物
+/build/
+/app/build/
+/server/build/
+*.apk
+*.aab
+
+# 本地配置与密钥（绝不入库）
+local.properties
+local.defaults.properties
+keystore.jks
+*.keystore
+key.properties
+
+# IDE
+.idea/
+.gradle/
+.local-maven/
+*.iml
+.DS_Store
+captures/
+admin-web/dist/
+admin-web/node_modules/
+server-php/.env
+server-php/vendor/
+server-php/public/assets/
+server-php/public/index.html
+
+# 本地数据库与测试残留
+*.db
+*.db-*
+*.bak
+.tmp_cfr.jar
+tmp_*
+.tmp_*/
+tmp_device_db/
+tmp-*.png
+tmp-*.jpg
+tmp-*.xml
+tmp-*.txt
+smartclock-*.png
+smartclock-*.xml
+server-php/tmp-*.log
+pic/test_*
+pic/verify_*
+pic/page_*
+pic/current_*
+pic/after_fix_*
+pic/app_*.png
+pic/app_*.xml
+pic/edit_ui.xml
+pic/reminder_ui.xml
+window_dump.xml
+ui.xml
+ui-home.xml
