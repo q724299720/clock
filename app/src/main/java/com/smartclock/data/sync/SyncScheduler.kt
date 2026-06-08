@@ -21,7 +21,14 @@ class SyncScheduler @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
     fun ensurePeriodicSync() {
-        val request = PeriodicWorkRequestBuilder<SyncWorker>(15, TimeUnit.MINUTES)
+        val workManager = WorkManager.getInstance(context)
+        if (LEGACY_PERIODIC_NAME != PERIODIC_NAME) {
+            workManager.cancelUniqueWork(LEGACY_PERIODIC_NAME)
+        }
+        val request = PeriodicWorkRequestBuilder<SyncWorker>(
+            PERIODIC_INTERVAL_HOURS,
+            TimeUnit.HOURS
+        )
             .setConstraints(
                 Constraints.Builder()
                     .setRequiredNetworkType(NetworkType.CONNECTED)
@@ -29,34 +36,64 @@ class SyncScheduler @Inject constructor(
             )
             .setInputData(workDataOf(KEY_TRIGGER_SOURCE to SyncTriggerSource.PERIODIC.name))
             .build()
-        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
-            SyncWorker.NAME,
+        workManager.enqueueUniquePeriodicWork(
+            PERIODIC_NAME,
             ExistingPeriodicWorkPolicy.KEEP,
             request
         )
     }
 
     fun scheduleImmediateSync(source: SyncTriggerSource = SyncTriggerSource.USER_ACTION) {
+        val workManager = WorkManager.getInstance(context)
+        workManager.cancelUniqueWork(DEBOUNCED_NAME)
         val request = buildImmediateRequest(source)
-        WorkManager.getInstance(context).enqueueUniqueWork(
+        workManager.enqueueUniqueWork(
             IMMEDIATE_NAME,
             ExistingWorkPolicy.REPLACE,
             request
         )
     }
 
-    private fun buildImmediateRequest(source: SyncTriggerSource): OneTimeWorkRequest =
+    fun scheduleDebouncedSync(source: SyncTriggerSource = SyncTriggerSource.USER_ACTION) {
+        val request = buildImmediateRequest(source, DEBOUNCE_DELAY_SECONDS)
+        WorkManager.getInstance(context).enqueueUniqueWork(
+            DEBOUNCED_NAME,
+            ExistingWorkPolicy.REPLACE,
+            request
+        )
+    }
+
+    fun cancelAllSync() {
+        val workManager = WorkManager.getInstance(context)
+        if (LEGACY_PERIODIC_NAME != PERIODIC_NAME) {
+            workManager.cancelUniqueWork(LEGACY_PERIODIC_NAME)
+        }
+        workManager.cancelUniqueWork(PERIODIC_NAME)
+        workManager.cancelUniqueWork(IMMEDIATE_NAME)
+        workManager.cancelUniqueWork(DEBOUNCED_NAME)
+    }
+
+    private fun buildImmediateRequest(
+        source: SyncTriggerSource,
+        delaySeconds: Long = 0L
+    ): OneTimeWorkRequest =
         OneTimeWorkRequestBuilder<SyncWorker>()
             .setConstraints(
                 Constraints.Builder()
                     .setRequiredNetworkType(NetworkType.CONNECTED)
                     .build()
             )
+            .setInitialDelay(delaySeconds, TimeUnit.SECONDS)
             .setInputData(workDataOf(KEY_TRIGGER_SOURCE to source.name))
             .build()
 
     companion object {
+        private const val LEGACY_PERIODIC_NAME = SyncWorker.NAME
+        private const val PERIODIC_NAME = "smartclock_sync_periodic"
         private const val IMMEDIATE_NAME = "smartclock_sync_now"
+        private const val DEBOUNCED_NAME = "smartclock_sync_debounced"
+        private const val PERIODIC_INTERVAL_HOURS = 6L
+        private const val DEBOUNCE_DELAY_SECONDS = 45L
         const val KEY_TRIGGER_SOURCE = "sync_trigger_source"
     }
 }

@@ -75,7 +75,9 @@ class ApiClient @Inject constructor(
                 val refreshedAccessToken = refreshTokens(accessToken)
                 return execute(method, path, body, refreshedAccessToken, type, allowRefresh = false)
             }
-            val error = runCatching { gson.fromJson(payload, ApiErrorResponse::class.java) }.getOrNull()
+            val error = runCatching<ApiErrorResponse?> {
+                gson.fromJson(payload, ApiErrorResponse::class.java)
+            }.getOrNull()
             throw IllegalStateException(
                 LegacyTextSanitizer.sanitize(error?.message) ?: "HTTP ${response.code}"
             )
@@ -116,22 +118,20 @@ class ApiClient @Inject constructor(
             body = ApiRefreshTokenRequest(refreshToken = refreshToken, clientType = CLIENT_TYPE_APP),
             accessToken = null
         )
-        httpClient.newCall(request).execute().use { response ->
+        return httpClient.newCall(request).execute().use { response ->
             val payload = response.body?.string().orEmpty()
             if (!response.isSuccessful) {
-                val error = runCatching { gson.fromJson(payload, ApiErrorResponse::class.java) }.getOrNull()
-                if (response.code == 401 || response.code == 403) {
-                    sessionStore.clear()
-                } else {
-                    Log.w("ApiClient", "token refresh failed: HTTP ${response.code}")
-                }
+                val error = runCatching<ApiErrorResponse?> {
+                    gson.fromJson(payload, ApiErrorResponse::class.java)
+                }.getOrNull()
+                Log.w("ApiClient", "token refresh failed: HTTP ${response.code}")
                 throw IllegalStateException(
                     LegacyTextSanitizer.sanitize(error?.message) ?: "Refresh failed"
                 )
             }
             val authResponse = gson.fromJson(payload, ApiAuthResponse::class.java)
             sessionStore.updateTokens(authResponse.accessToken, authResponse.refreshToken)
-            return authResponse.accessToken
+            authResponse.accessToken
         }
     }
 }
